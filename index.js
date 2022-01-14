@@ -9,6 +9,7 @@ const { createUser, userLogin } = require("./controllers/user.controller");
 
 const app = express();
 const PORT = process.env.PORT;
+const MONGO_URL = process.env.MONGO_URL;
 
 // // // // // // // global middleware // // // // // //
 app.use(cors());
@@ -16,12 +17,10 @@ app.use(express.json());
 
 // // // // // // // mongoose connect // // // // // //
 try {
-    mongoose.connect(
-        'mongodb://localhost:27017/myKitties'
-        , {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        });
+    mongoose.connect(MONGO_URL, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    });
     console.log("connect to mongo");
 } catch (error) {
     console.error(error)
