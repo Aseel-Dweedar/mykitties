@@ -18,7 +18,7 @@ app.use(express.json());
 mongoose
     .connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
     .then((value) => {
-        console.log("WORKING !!");
+        console.log("WORKING !!", value);
     })
     .catch((err) => {
         console.log("NOOOOOOOOOOOOO !!");
