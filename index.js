@@ -9,22 +9,21 @@ const { createUser, userLogin } = require("./controllers/user.controller");
 
 const app = express();
 const PORT = process.env.PORT;
-const MONGO_URL = process.env.MONGO_URL;
 
 // // // // // // // global middleware // // // // // //
 app.use(cors());
 app.use(express.json());
 
 // // // // // // // mongoose connect // // // // // //
-try {
-    mongoose.connect(MONGO_URL, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
+mongoose
+    .connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then((value) => {
+        console.log("WORKING !!");
+    })
+    .catch((err) => {
+        console.log("NOOOOOOOOOOOOO !!");
+        console.log(err);
     });
-    console.log("connect to mongo");
-} catch (error) {
-    console.error(error)
-}
 
 
 // // // // // // // root endpoint // // // // // //
