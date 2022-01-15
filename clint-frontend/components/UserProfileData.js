@@ -4,13 +4,17 @@ import colors from "../assets/colors/colors";
 import userImg from "../assets/img/user.png";
 
 const UserProfileData = (props) => {
+
+  const { firstName, lastName, username, phone, email } = props.user;
+
   return (
     <View style={styles.container}>
       <Image source={userImg} style={styles.img} />
       <View style={styles.textContainer}>
-        <Text style={styles.fullName}>{`${props.user.firstName} ${props.user.lastName}`}</Text>
-        <Text style={styles.text}>{props.user.username}</Text>
-        <Text style={styles.text}>{props.user.phone}</Text>
+        <Text style={styles.fullName}>{`${firstName} ${lastName}`}</Text>
+        <Text style={styles.text}>{username}</Text>
+        <Text style={styles.text}>{phone}</Text>
+        <Text style={styles.text}>{email}</Text>
       </View>
     </View>
   );

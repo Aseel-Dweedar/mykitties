@@ -14,6 +14,7 @@ const SignUp = ({ navigation }) => {
   const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const onChangeUsername = (value) => {
@@ -31,12 +32,15 @@ const SignUp = ({ navigation }) => {
   const onChangePhone = (value) => {
     setPhone(value);
   };
+  const onChangeEmail = (value) => {
+    setEmail(value);
+  };
 
   const signUpBtnEvent = () => {
-    if (username && firstName && lastName && password && phone) {
+    if (username && firstName && lastName && password && phone && email) {
       setIsLoading(true);
       axios
-        .post(`${API_URL}/user`, { username, firstName, lastName, password, phone })
+        .post(`${API_URL}/user`, { username, firstName, lastName, password, email, phone })
         .then((axiosResponse) => {
           setIsLoading(false);
           setIsLoading(false);
@@ -70,6 +74,7 @@ const SignUp = ({ navigation }) => {
         <InputField placeholder="First Name" name="user" onChangeText={onChangeFirstName} value={firstName} />
         <InputField placeholder="Last Name" name="user-o" onChangeText={onChangeLastName} value={lastName} />
         <InputField placeholder="Password" name="lock" onChangeText={onChangePassword} value={password} />
+        <InputField placeholder="E-mail" name="envelope" onChangeText={onChangeEmail} value={email} />
         <InputField placeholder="Phone" name="phone" onChangeText={onChangePhone} value={phone} placeholder="+962" />
       </View>
     );

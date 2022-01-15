@@ -1,75 +1,74 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, TouchableOpacity, Text, ActivityIndicator, Alert } from "react-native";
+import { StyleSheet, View, TouchableOpacity, Text, ActivityIndicator } from "react-native";
 import colors from "../assets/colors/colors";
 import axios from "axios";
-import { getUser } from "../assets/getUser";
 import UserProfileData from "../components/UserProfileData";
 import { FontAwesome } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import CatsList from "../components/CatsList";
+import CustomButton from "../components/CustomButton";
+import AddCat from "./AddCat";
 
 const API_URL = process.env.API_URL;
 
 const Profile = ({ navigation, route }) => {
 
-  const [requestsList, setRequestsList] = useState(null);
-  const [user, setUser] = useState(null);
+  const user = route.params.user;
+
+  const [catsList, setCatsList] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [addCatRender, setAddCatRender] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);
-    getUser()
-      .then((user) => {
-        setUser(() => user);
+    axios
+      .get(`${API_URL}/cat`, {
+        headers: {
+          authorization: `Bearer ${user.token}`,
+        },
+      })
+      .then((axiosRes) => {
         setIsLoading(false);
+        setCatsList(() => axiosRes.data);
       })
       .catch((err) => {
-        console.error(err);
+        setIsLoading(false);
+        alert("An error happens!! please try again later!");
       });
   }, []);
 
-  // useEffect(() => {
-  //   if (user) {
-  //     getRequests();
-  //   }
-  // }, [user]);
 
-  // const getRequests = () => {
-  //   axios
-  //     .get(`${API_URL}/request`, {
-  //       headers: {
-  //         authorization: `Bearer ${user.token}`,
-  //       },
-  //     })
-  //     .then((axiosRes) => {
-  //       setIsLoading(false);
-  //       setRequestsList(() => axiosRes.data);
-  //     })
-  //     .catch((err) => {
-  //       setIsLoading(false);
-  //       Alert.alert(
-  //         "Error",
-  //         "An error happens!! please try again later!",
-  //         [
-  //           { text: "OK", onPress: () => console.log("OK Pressed") }
-  //         ]
-  //       );
-  //     });
-  // };
+  const deleteCat = (catId) => {
+    axios
+      .delete(`${API_URL}/cat/${catId}`, {
+        headers: {
+          authorization: `Bearer ${user.token}`,
+        },
+      })
+      .then((axiosRes) => {
+        setCatsList(axiosRes.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
-  // const deleteRequest = (requestId) => {
-  //   axios
-  //     .delete(`${API_URL}/request/${requestId}`, {
-  //       headers: {
-  //         authorization: `Bearer ${user.token}`,
-  //       },
-  //     })
-  //     .then((axiosRes) => {
-  //       setRequestsList(axiosRes.data);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // };
+  const submitCat = (name, breed, description) => {
+    let reqBody = { name, description, breed };
+    axios
+      .post(`${API_URL}/cat`, reqBody, {
+        headers: {
+          authorization: `Bearer ${user.token}`,
+        },
+      })
+      .then((axiosRes) => {
+        setAddCatRender(false);
+        setCatsList(axiosRes.data);
+      })
+      .catch((err) => {
+        alert("An error happens!! please try again later");
+      });
+  };
 
   const signOut = async () => {
     try {
@@ -80,14 +79,12 @@ const Profile = ({ navigation, route }) => {
     }
   };
 
-  // const showRequest = async (request) => navigation.navigate("Details", { requestDetail: request });
+  const goToAddCat = () => {
+    setAddCatRender(true);
+  };
 
-  if (isLoading) {
-    return (
-      <View style={{ backgroundColor: colors.primary, flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator color={colors.secondary} size="large" />
-      </View>
-    );
+  if (addCatRender) {
+    return <AddCat submitCat={submitCat} />
   }
 
   return (
@@ -99,9 +96,14 @@ const Profile = ({ navigation, route }) => {
         </TouchableOpacity>
         {user && <UserProfileData user={user} />}
       </View>
-      <View style={styles.requestsContainer}>
-        {/* <RequestsList deleteRequest={deleteRequest} showRequest={showRequest} requestsList={requestsList} /> */}
+      <View style={styles.catsContainer}>
+        {isLoading ? <ActivityIndicator color={colors.secondary} size="large" /> : <CatsList deleteCat={deleteCat} catsList={catsList} />}
       </View>
+      <CustomButton
+        title="Add Cat"
+        btn={styles.btn} btnText={styles.btnText}
+        onPress={goToAddCat}
+      />
     </View>
   );
 };
@@ -129,12 +131,20 @@ const styles = StyleSheet.create({
     color: colors.lightGray,
     marginLeft: 10,
   },
-  requestsContainer: {
+  catsContainer: {
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
     backgroundColor: colors.primary,
     padding: 20,
     flex: 2,
+    justifyContent: "center"
+  },
+  btn: {
+    backgroundColor: colors.secondary,
+    width: "40%",
+  },
+  btnText: {
+    color: colors.primary,
   },
 });
 

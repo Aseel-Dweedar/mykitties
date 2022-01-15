@@ -11,7 +11,7 @@ import { getUser } from "../assets/getUser";
 
 const API_URL = process.env.API_URL;
 
-const SignIn = ({ navigation, route }) => {
+const SignIn = ({ navigation }) => {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -19,7 +19,6 @@ const SignIn = ({ navigation, route }) => {
 
   useEffect(() => {
     setIsLoading(true);
-    console.log(" am in ");
     getUser()
       .then((user) => {
         setIsLoading(false);
@@ -51,7 +50,7 @@ const SignIn = ({ navigation, route }) => {
             try {
               await AsyncStorage.setItem("user", JSON.stringify(axiosResponse.data));
               setIsLoading(false);
-              navigation.navigate("Profile");
+              navigation.navigate("Profile", { user: axiosResponse.data });
             } catch (err) {
               alert("An error happens!! please try again later");
               setIsLoading(false);

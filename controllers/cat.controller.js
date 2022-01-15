@@ -13,6 +13,13 @@ const getUserCats = (res, user) => {
     }).populate("user");
 };
 
+// // // // // // // get all user's cats // // // // // //
+const getCats = (req, res) => {
+    let user = req.user;
+    getUserCats(res, user);
+};
+
+
 // // // // // // // CRETE // // // // // //
 const createCat = async (req, res) => {
 
@@ -23,26 +30,29 @@ const createCat = async (req, res) => {
     newCat.user = user;
 
     await newCat.save();
-    res.send(newCat);
+
+    getUserCats(res, user);
 }
 
-// // // // // // // get all user's cats // // // // // //
-const getCats = (req, res) => {
-    let user = req.user;
-    getUserCats(res, user);
-};
+// // // // // // // update // // // // // //
+const updateCat = (req, res) => {
 
-// // // // // // // GET One Cat // // // // // //
-const getOneCat = (req, res) => {
-    const id = req.params.id;
-    catModel.findOne({ _id: id }, (error, data) => {
+    let catId = req.params.catId;
+    const { name, breed, description } = req.body;
+    const user = req.user;
+
+    catModel.findOne({ _id: catId }, async (error, data) => {
         if (error) {
             res.send(error.message);
         } else {
-            res.send(data);
+            data.name = name;
+            data.breed = breed;
+            data.description = description;
+            await data.save();
+            getUserCats(res, user);
         }
-    }).populate("user");
-};
+    });
+}
 
 // // // // // // // DELETE // // // // // //
 const deleteCat = (req, res) => {
@@ -57,4 +67,4 @@ const deleteCat = (req, res) => {
     });
 };
 
-module.exports = { createCat, getCats, deleteCat, getOneCat };
+module.exports = { createCat, getCats, deleteCat, updateCat };

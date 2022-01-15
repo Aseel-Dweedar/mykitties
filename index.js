@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
 
-const { createCat, getCats, deleteCat, getOneCat } = require('./controllers/cat.controller');
+const { createCat, getCats, deleteCat, updateCat } = require('./controllers/cat.controller');
 const tokenModel = require("./models/token.model");
 const { createUser, userLogin } = require("./controllers/user.controller");
 
@@ -18,10 +18,10 @@ app.use(express.json());
 mongoose
     .connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
     .then((value) => {
-        console.log("WORKING !!", value);
+        console.log("Connected to MongoDB !!");
     })
     .catch((err) => {
-        console.log("NOOOOOOOOOOOOO !!");
+        console.log("NOOOOOOOOOOOOO, Connected to MongoDB failed !!");
         console.log(err);
     });
 
@@ -52,11 +52,9 @@ app.use(async (req, res, next) => {
 
 // // // // // // // Car endpoint // // // // // //
 app.get("/cat", getCats);
-app.get("/cat/:id", getOneCat);
 app.post("/cat", createCat);
 app.delete("/cat/:catId", deleteCat);
-// app.put("/cat/:catId", updateCat);
-
+app.put("/cat/:catId", updateCat);
 
 // // // // // // // 404 handler // // // // // //
 app.use((req, res, next) => {

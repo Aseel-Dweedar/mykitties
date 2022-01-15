@@ -6,13 +6,17 @@ import { getUser } from "./assets/getUser";
 
 export default function App() {
   const [toRender, setRender] = useState(false);
-  // const [user, setUser] = useState(false);
+  const [moveTo, setMoveTo] = useState("SignIn");
+  const [user, setUser] = useState(null);
 
   setTimeout(() => {
     getUser()
       .then((user) => {
-        // if (user) setUser(true);
         setRender(true);
+        if (user != null) {
+          setMoveTo("Profiles");
+          setUser(user);
+        }
       })
       .catch((err) => {
         console.error(err);
@@ -24,7 +28,7 @@ export default function App() {
   } else {
     return (
       <NavigationContainer>
-        <MainStackNavigator />
+        <MainStackNavigator moveTo={moveTo} user={{ user }} />
       </NavigationContainer>
     );
   }
