@@ -63,7 +63,7 @@ const SignUp = ({ navigation }) => {
   let inputDiv;
   if (isLoading) {
     inputDiv = (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center", marginBottom: 10 }}>
         <ActivityIndicator color={colors.secondary} size="large" />
       </View>
     );
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
   btn: {
     backgroundColor: colors.secondary,
     width: "50%",
-    marginVertical: 40,
+    marginVertical: 10,
   },
   btnText: {
     color: colors.primary,

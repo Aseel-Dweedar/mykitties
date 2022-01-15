@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ddd",
     borderRadius: 20,
-    marginVertical: 10,
+    marginVertical: 7,
     backgroundColor: colors.lightGray,
   },
   icon: {

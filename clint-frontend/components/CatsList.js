@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import { Feather } from '@expo/vector-icons';
 import colors from "../assets/colors/colors";
 
 const CatsList = (props) => {
@@ -11,15 +12,20 @@ const CatsList = (props) => {
         {props.catsList && props.catsList.length ? (
           props.catsList.map((cat, index) => {
             return (
-              <TouchableOpacity key={index} style={styles.oneCat}>
+              <View key={index} style={styles.oneCat}>
                 <View style={styles.textContainer}>
                   <Text style={styles.catName}>{`${cat.name} - ${cat.breed}`}</Text>
                   <Text style={styles.text}>{cat.description}</Text>
                 </View>
-                <TouchableOpacity onPress={() => props.deleteCat(cat._id)}>
-                  <MaterialIcons name="delete" size={22} color={colors.secondary} />
-                </TouchableOpacity>
-              </TouchableOpacity>
+                <View style={styles.iconsContainer}>
+                  <TouchableOpacity onPress={() => props.showModal(cat)} style={{ marginRight: 7 }}>
+                    <Feather name="edit-3" size={22} color={colors.secondary} />
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => props.deleteCat(cat._id)}>
+                    <MaterialIcons name="delete" size={22} color={colors.secondary} />
+                  </TouchableOpacity>
+                </View>
+              </View>
             );
           })
         ) : (
@@ -46,7 +52,6 @@ const styles = StyleSheet.create({
     flex: 2,
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
     width: "100%",
     marginBottom: 7,
     backgroundColor: colors.lightGray,
@@ -54,7 +59,12 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   textContainer: {
-    maxWidth: "90%",
+    maxWidth: "80%",
+    padding: 5
+  },
+  iconsContainer: {
+    flexDirection: "row",
+    alignItems: "center"
   },
   catName: {
     fontWeight: "bold",
@@ -64,7 +74,6 @@ const styles = StyleSheet.create({
   },
   text: {
     color: colors.primary,
-    marginBottom: 10,
   },
 });
 

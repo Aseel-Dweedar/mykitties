@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, TouchableOpacity, Text, ActivityIndicator } from "react-native";
+import { StyleSheet, View, TouchableOpacity, Text, ActivityIndicator, TextInput, Modal, Pressable } from "react-native";
 import colors from "../assets/colors/colors";
 import axios from "axios";
 import UserProfileData from "../components/UserProfileData";
@@ -8,6 +8,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import CatsList from "../components/CatsList";
 import CustomButton from "../components/CustomButton";
 import AddCat from "./AddCat";
+import InputField from "../components/InputField";
 
 const API_URL = process.env.API_URL;
 
@@ -18,6 +19,11 @@ const Profile = ({ navigation, route }) => {
   const [catsList, setCatsList] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [addCatRender, setAddCatRender] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [catName, setCatName] = useState("");
+  const [breed, setBreed] = useState("");
+  const [description, setDescription] = useState("");
+  const [catId, setCatId] = useState("");
 
   useEffect(() => {
     setIsLoading(true);
@@ -70,6 +76,45 @@ const Profile = ({ navigation, route }) => {
       });
   };
 
+  const updateCat = () => {
+    let reqBody = { name: catName, description: description, breed: breed };
+    axios
+      .put(`${API_URL}/cat/${catId}`, reqBody, {
+        headers: {
+          authorization: `Bearer ${user.token}`,
+        },
+      })
+      .then((axiosRes) => {
+        setCatsList(axiosRes.data);
+        setModalVisible(false);
+      })
+      .catch((err) => {
+        alert("An error happens!! please try again later");
+      });
+  };
+
+  const showModal = (cat) => {
+    console.log(cat);
+    setCatName(cat.name);
+    setBreed(cat.breed);
+    setDescription(cat.description);
+    setCatId(cat._id);
+    setModalVisible(true);
+  }
+
+
+  const onChangeCatName = (value) => {
+    setCatName(value);
+  };
+
+  const onChangeBreed = (value) => {
+    setBreed(value);
+  };
+
+  const onChangeDescription = (value) => {
+    setDescription(value);
+  };
+
   const signOut = async () => {
     try {
       await AsyncStorage.removeItem("user");
@@ -83,8 +128,12 @@ const Profile = ({ navigation, route }) => {
     setAddCatRender(true);
   };
 
+  const backToProfile = () => {
+    setAddCatRender(false);
+  }
+
   if (addCatRender) {
-    return <AddCat submitCat={submitCat} />
+    return <AddCat submitCat={submitCat} backToProfile={backToProfile} />
   }
 
   return (
@@ -97,13 +146,50 @@ const Profile = ({ navigation, route }) => {
         {user && <UserProfileData user={user} />}
       </View>
       <View style={styles.catsContainer}>
-        {isLoading ? <ActivityIndicator color={colors.secondary} size="large" /> : <CatsList deleteCat={deleteCat} catsList={catsList} />}
+        {isLoading ? <ActivityIndicator color={colors.secondary} size="large" /> : <CatsList showModal={showModal} deleteCat={deleteCat} catsList={catsList} />}
+        <CustomButton
+          title="Add Cat"
+          btn={{ backgroundColor: colors.secondary, width: "100%", }} btnText={styles.btnText}
+          onPress={goToAddCat}
+        />
       </View>
-      <CustomButton
-        title="Add Cat"
-        btn={styles.btn} btnText={styles.btnText}
-        onPress={goToAddCat}
-      />
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <View style={styles.inputContainer} >
+              <Text style={styles.modalText}>Edit your cat</Text>
+              <InputField
+                placeholder="name"
+                name="paw"
+                onChangeText={onChangeCatName}
+                value={catName}
+              />
+              <InputField placeholder="breed" name="paw" onChangeText={onChangeBreed} value={breed} />
+              <TextInput
+                style={styles.descriptionStyle}
+                name="newspaper-o"
+                onChangeText={onChangeDescription}
+                value={description}
+              />
+            </View>
+            <View style={styles.btnContainer}>
+              <CustomButton title="Cancel" btn={{ width: "40%", backgroundColor: colors.primary }}
+                btnText={{ color: colors.secondary }} onPress={() => setModalVisible(!modalVisible)} />
+              <CustomButton
+                title="Update"
+                btn={styles.btn} btnText={styles.btnText}
+                onPress={updateCat}
+              />
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -137,7 +223,54 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     padding: 20,
     flex: 2,
-    justifyContent: "center"
+    justifyContent: "center",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+    backgroundColor: `${colors.lightGray}90`
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: colors.primary,
+    borderRadius: 20,
+    padding: 20,
+    alignItems: 'center',
+    shadowColor: '#000',
+    width: "90%",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+    color: colors.lightGray,
+    fontSize: 20
+  },
+  inputContainer: {
+    width: "100%",
+  },
+  descriptionStyle: {
+    backgroundColor: colors.lightGray,
+    padding: 5,
+    marginVertical: 10,
+    width: "100%",
+    height: 100,
+    justifyContent: "flex-start",
+    textAlignVertical: 'top'
+  },
+  btnContainer: {
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginVertical: 10,
   },
   btn: {
     backgroundColor: colors.secondary,
