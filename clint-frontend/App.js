@@ -15,20 +15,18 @@ export default function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const getUser = async () => {
+    setTimeout(async () => {
       try {
         let jsonValue = await AsyncStorage.getItem("user");
         if (jsonValue) {
-          jsonValue = JSON.parse(jsonValue);
-          setUser(jsonValue);
+          setUser(JSON.parse(jsonValue));
           setMoveTo("Profile");
         }
         setRender(true);
       } catch (e) {
         console.log(e);
       }
-    }
-    getUser();
+    }, 1000);
   }, []);
 
   if (!toRender) {

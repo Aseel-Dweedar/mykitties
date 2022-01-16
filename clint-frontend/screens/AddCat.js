@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
   },
   labelText: {
     color: colors.lightGray,
-    marginLeft: 10,
+    marginTop: 10,
   },
   btnContainer: {
     width: "100%",

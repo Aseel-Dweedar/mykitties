@@ -1,15 +1,13 @@
 import React from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
-import logo from "../assets/img/finalLogo.png";
+import { StyleSheet, Text, View } from "react-native";
 import colors from "../assets/colors/colors";
 
 function Splash() {
 
   return (
     <View style={styles.container}>
-      <Image source={logo} style={styles.img} />
-      <Text style={styles.text}>TRIPLE-C</Text>
-      <Text style={styles.secondText}>Car Caring Center</Text>
+      <Text style={styles.text}>MY KITTIES</Text>
+      <Text style={styles.secondText}>Track Your Cats</Text>
     </View>
   );
 }
@@ -19,11 +17,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-  },
-
-  img: {
-    resizeMode: "contain",
-    width: "90%",
   },
   text: {
     color: colors.primary,

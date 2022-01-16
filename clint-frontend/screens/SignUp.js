@@ -18,7 +18,7 @@ const SignUp = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const onChangeUsername = (value) => {
-    setUsername(value.replace(/[^a-z||^1-9||_]/g, ""));
+    setUsername(value);
   };
   const onChangeFirstName = (value) => {
     setFirstName(value);

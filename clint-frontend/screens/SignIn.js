@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import colors from "../assets/colors/colors";
 import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator, Alert } from "react-native";
 import AuthScreens from "../components/AuthScreens";
@@ -17,7 +17,7 @@ const SignIn = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const onChangeUsername = (value) => {
-    setUsername(value.replace(/[^a-z||^1-9||_]/g, ""));
+    setUsername(value);
   };
   const onChangePassword = (value) => {
     setPassword(value);

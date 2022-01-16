@@ -1,7 +1,6 @@
 import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 import colors from "../assets/colors/colors";
-import userImg from "../assets/img/user.png";
 
 const UserProfileData = (props) => {
 

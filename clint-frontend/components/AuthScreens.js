@@ -1,14 +1,13 @@
 import React from "react";
-import { StyleSheet, View, Text, ImageBackground } from "react-native";
-import backgroundImg from "../assets/backgrounds/backgroundmain.png";
+import { StyleSheet, View, Text } from "react-native";
 import colors from "../assets/colors/colors";
 
 const AuthScreens = (props) => {
   return (
     <View style={styles.container}>
-      <ImageBackground source={backgroundImg} resizeMode="cover" style={styles.image}>
+      <View style={styles.topSection}>
         <Text style={styles.welcome}>WELCOME !</Text>
-      </ImageBackground>
+      </View>
       <View style={styles.mainBody}>{props.children}</View>
     </View>
   );
@@ -19,11 +18,12 @@ const styles = StyleSheet.create({
     flex: 3.5,
     backgroundColor: colors.primary,
   },
-  image: {
+  topSection: {
     flex: 1,
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: colors.primary
   },
   mainBody: {
     borderTopLeftRadius: 40,

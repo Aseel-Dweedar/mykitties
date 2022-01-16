@@ -7,14 +7,12 @@ import axios from "axios";
 import UserProfileData from "../components/UserProfileData";
 import CatsList from "../components/CatsList";
 import CustomButton from "../components/CustomButton";
-import AddCat from "./AddCat";
 import InputField from "../components/InputField";
+import AddCat from "./AddCat";
 
 const API_URL = process.env.API_URL;
 
 const Profile = ({ navigation, route }) => {
-
-  const user = route.params.user;
 
   const [catsList, setCatsList] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -24,13 +22,14 @@ const Profile = ({ navigation, route }) => {
   const [breed, setBreed] = useState("");
   const [description, setDescription] = useState("");
   const [catId, setCatId] = useState("");
+  const [user, setUser] = useState(route.params.user._id);
 
   useEffect(() => {
     setIsLoading(true);
     axios
       .get(`${API_URL}/cat`, {
         headers: {
-          authorization: `Bearer ${user.token}`,
+          authorization: `Bearer ${route.params.user.token}`,
         },
       })
       .then((axiosRes) => {
@@ -41,14 +40,14 @@ const Profile = ({ navigation, route }) => {
         setIsLoading(false);
         alert("An error happens!! please try again later!");
       });
-  }, []);
+  }, [route.params.user._id]);
 
 
   const deleteCat = (catId) => {
     axios
       .delete(`${API_URL}/cat/${catId}`, {
         headers: {
-          authorization: `Bearer ${user.token}`,
+          authorization: `Bearer ${route.params.user.token}`,
         },
       })
       .then((axiosRes) => {
@@ -64,7 +63,7 @@ const Profile = ({ navigation, route }) => {
     axios
       .post(`${API_URL}/cat`, reqBody, {
         headers: {
-          authorization: `Bearer ${user.token}`,
+          authorization: `Bearer ${route.params.user.token}`,
         },
       })
       .then((axiosRes) => {
@@ -81,7 +80,7 @@ const Profile = ({ navigation, route }) => {
     axios
       .put(`${API_URL}/cat/${catId}`, reqBody, {
         headers: {
-          authorization: `Bearer ${user.token}`,
+          authorization: `Bearer ${route.params.user.token}`,
         },
       })
       .then((axiosRes) => {
@@ -117,7 +116,7 @@ const Profile = ({ navigation, route }) => {
   const signOut = async () => {
     try {
       await AsyncStorage.removeItem("user");
-      navigation.navigate("SignIn")
+      navigation.navigate("SignIn");
     } catch (e) {
       console.log(e);
     }
@@ -142,13 +141,13 @@ const Profile = ({ navigation, route }) => {
           <FontAwesome name="sign-out" size={22} color={colors.secondary} />
           <Text style={styles.logOutText}>Sign-Out</Text>
         </TouchableOpacity>
-        {user && <UserProfileData user={user} />}
+        {user && <UserProfileData user={route.params.user} />}
       </View>
       <View style={styles.catsContainer}>
         {isLoading ? <ActivityIndicator color={colors.secondary} size="large" /> : <CatsList showModal={showModal} deleteCat={deleteCat} catsList={catsList} />}
         <CustomButton
           title="Add Cat"
-          btn={{ backgroundColor: colors.secondary, width: "100%", }} btnText={styles.btnText}
+          btn={{ backgroundColor: colors.secondary, width: "100%", marginBottom: 40 }} btnText={styles.btnText}
           onPress={goToAddCat}
         />
       </View>
