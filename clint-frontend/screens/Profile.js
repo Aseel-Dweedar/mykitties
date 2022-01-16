@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, TouchableOpacity, Text, ActivityIndicator, TextInput, Modal, Pressable } from "react-native";
+import { StyleSheet, View, TouchableOpacity, Text, ActivityIndicator, TextInput, Modal } from "react-native";
+import { FontAwesome } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import colors from "../assets/colors/colors";
 import axios from "axios";
 import UserProfileData from "../components/UserProfileData";
-import { FontAwesome } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import CatsList from "../components/CatsList";
 import CustomButton from "../components/CustomButton";
 import AddCat from "./AddCat";
@@ -34,8 +34,8 @@ const Profile = ({ navigation, route }) => {
         },
       })
       .then((axiosRes) => {
-        setIsLoading(false);
         setCatsList(() => axiosRes.data);
+        setIsLoading(false);
       })
       .catch((err) => {
         setIsLoading(false);
@@ -94,7 +94,6 @@ const Profile = ({ navigation, route }) => {
   };
 
   const showModal = (cat) => {
-    console.log(cat);
     setCatName(cat.name);
     setBreed(cat.breed);
     setDescription(cat.description);

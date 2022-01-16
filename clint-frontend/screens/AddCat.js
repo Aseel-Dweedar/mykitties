@@ -8,7 +8,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 const AddService = (props) => {
 
   const { submitCat, backToProfile } = props;
-  console.log("backToProfile", backToProfile);
+
   const [catName, setCatName] = useState("");
   const [breed, setBreed] = useState("");
   const [description, setDescription] = useState("");

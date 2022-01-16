@@ -7,7 +7,6 @@ import CustomButton from "../components/CustomButton";
 import SocialMedia from "../components/SocialMedia";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import { getUser } from "../assets/getUser";
 
 const API_URL = process.env.API_URL;
 
@@ -16,18 +15,6 @@ const SignIn = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    setIsLoading(true);
-    getUser()
-      .then((user) => {
-        setIsLoading(false);
-        if (user) navigation.navigate("Profile");
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, []);
 
   const onChangeUsername = (value) => {
     setUsername(value.replace(/[^a-z||^1-9||_]/g, ""));

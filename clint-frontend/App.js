@@ -1,34 +1,51 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import MainStackNavigator from "./navigation/NativeStackNavigator";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Splash from "./screens/Splash";
-import { getUser } from "./assets/getUser";
+import SignIn from "./screens/SignIn";
+import SignUp from "./screens/SignUp";
+import Profile from "./screens/Profile";
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   const [toRender, setRender] = useState(false);
   const [moveTo, setMoveTo] = useState("SignIn");
   const [user, setUser] = useState(null);
 
-  setTimeout(() => {
-    getUser()
-      .then((user) => {
-        setRender(true);
-        if (user != null) {
-          setMoveTo("Profiles");
-          setUser(user);
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        let jsonValue = await AsyncStorage.getItem("user");
+        if (jsonValue) {
+          jsonValue = JSON.parse(jsonValue);
+          setUser(jsonValue);
+          setMoveTo("Profile");
         }
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, 1000);
+        setRender(true);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    getUser();
+  }, []);
 
   if (!toRender) {
     return <Splash />;
   } else {
     return (
       <NavigationContainer>
-        <MainStackNavigator moveTo={moveTo} user={{ user }} />
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false,
+          }}
+          initialRouteName={moveTo}
+        >
+          <Stack.Screen name="SignIn" component={SignIn} />
+          <Stack.Screen name="Profile" component={Profile} initialParams={{ user }} />
+          <Stack.Screen name="SignUp" component={SignUp} />
+        </Stack.Navigator>
       </NavigationContainer>
     );
   }
